@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belanja Sembako</title>
+    <style>
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        input[type="number"] {
+            width: 200px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Belanja Sembako</h2>
+
+    <label for="saldo">Masukkan Saldo Anda (Rp):</label>
+    <input type="number" id="saldo" value="200000" min="0">
+    <button onclick="cekSembako()">Cek Sembako</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Sembako</th>
+                <th>Harga</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tabelSembako">
+            <!-- Opsi sembako akan muncul di sini -->
+        </tbody>
+    </table>
+
+    <h3 id="saldoAkhir">Saldo Akhir: Rp200.000</h3>
+
+    <script>
+        const sembako = [
+            { nama: 'Sembako 1', harga: 150000 },
+            { nama: 'Sembako 2', harga: 250000 },
+            { nama: 'Sembako 3', harga: 350000 }
+        ];
+
+        function cekSembako() {
+            const saldo = parseInt(document.getElementById('saldo').value);
+            const tabelSembako = document.getElementById('tabelSembako');
+
+            tabelSembako.innerHTML = ''; // Bersihkan tabel sebelum menampilkan hasil baru
+
+            sembako.forEach(item => {
+                if (saldo >= item.harga) {
+                    const row = `<tr>
+                                    <td>${item.nama}</td>
+                                    <td>Rp${item.harga.toLocaleString()}</td>
+                                    <td><button onclick="beliSembako('${item.nama}', ${item.harga})">Beli</button></td>
+                                 </tr>`;
+                    tabelSembako.innerHTML += row;
+                }
+            });
+
+            if (tabelSembako.innerHTML === '') {
+                tabelSembako.innerHTML = '<tr><td colspan="3">Saldo tidak cukup untuk membeli sembako.</td></tr>';
+            }
+        }
+
+        function beliSembako(nama, harga) {
+            const saldo = parseInt(document.getElementById('saldo').value);
+            if (saldo >= harga) {
+                const konfirmasi = confirm(`Apakah Anda yakin ingin membeli ${nama} seharga Rp${harga.toLocaleString()}?`);
+                if (konfirmasi) {
+                    const saldoBaru = saldo - harga;
+                    document.getElementById('saldo').value = saldoBaru;
+                    document.getElementById('saldoAkhir').innerText = `Saldo Akhir: Rp${saldoBaru.toLocaleString()}`;
+                    alert(`Anda telah membeli ${nama}. Sisa saldo Anda Rp${saldoBaru.toLocaleString()}.`);
+                    cekSembako(); // Perbarui daftar sembako yang tersedia
+                }
+            } else {
+                alert('Saldo Anda tidak cukup untuk membeli sembako ini.');
+            }
+        }
+    </script>
+
+</body>
+</html>
